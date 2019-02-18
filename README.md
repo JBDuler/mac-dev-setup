@@ -1,18 +1,10 @@
-# Mac OS X Dev Setup
+# macOS Dev Setup
 
-TODO:
-- [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) and [Postman Interceptor](https://chrome.google.com/webstore/detail/postman-interceptor/aicmkgpgakddgnaphhhpliifpcfhicfo)
-- [GitHub Desktop](https://desktop.github.com/)
-- [WagonHQ](https://www.wagonhq.com/)
-- git autocomplete `curl -O https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash` https://git-scm.com/book/en/v1/Git-Basics-Tips-and-Tricks
+This document describes how I set up my developer environment on a new MacBook or iMac. We will set up popular programming languages (for example [Node](http://nodejs.org/) (JavaScript), [Python](http://www.python.org/), and [Ruby](http://www.ruby-lang.org/)). You may not need all of them for your projects, although I recommend having them set up as they always come in handy.
 
-This document describes how I set up my developer environment on a new MacBook or iMac. We will set up popular programming languages (for example [Node](http://nodejs.org/) (JavaScript), [Python](http://www.python.org/), and [Ruby](http://www.ruby-lang.org/)). You may not need all of them for your projects, although I recommend having the three first three set up as they always come in handy.
+The document assumes you are new to Mac, but can also be useful if you are reinstalling a system and need some reminder. The steps below were tested on **macOS High Sierra** (10.13), but should work for more recent versions as well.
 
-The document assumes you are new to Mac, but can also be useful if you are reinstalling a system and need some reminder. The steps below were tested on **OS X El Capitan** (10.11).
-
-(**Note**: This is the second version of this guide. If you are looking for the first version written for OS X Mountain Lion, see [1.0](https://github.com/nicolashery/mac-dev-setup/tree/v1.0.0))
-
-If you have any comments or suggestions, feel free to give me a shout [on Twitter](https://twitter.com/nicolahery)!
+**Contributing**: If you find any mistakes in the steps described below, or if any of the commands are outdated, do let me know! For any other suggestions, please understand that this guide was originally written for some friends and as a personal reference for myself, and I'm trying to keep it simple. There are many valid ways to set up a developer environment, and this is just one of them.
 
 - [System update](#system-update)
 - [System preferences](#system-preferences)
@@ -20,10 +12,8 @@ If you have any comments or suggestions, feel free to give me a shout [on Twitte
 - [Google Chrome](#google-chrome)
 - [iTerm2](#iterm2)
 - [Homebrew](#homebrew)
-- [Beautiful terminal](#beautiful-terminal)
-- [iTerm2](#iterm2)
 - [Git](#git)
-- [Sublime Text](#sublime-text)
+- [Visual Studio Code](#visual-studio-code)
 - [Vim](#vim)
 - [Python](#python)
 - [Node.js](#nodejs)
@@ -70,6 +60,8 @@ Download from [www.google.com/chrome](https://www.google.com/chrome/). Open the 
 
 ## iTerm2
 
+### Install
+
 Since we're going to be spending a lot of time in the command-line, let's install a better terminal than the default one. Download and install [iTerm2](http://www.iterm2.com/).
 
 In **Finder**, drag and drop the **iTerm** Application file into the **Applications** folder.
@@ -80,11 +72,42 @@ Let's just quickly change some preferences. In **iTerm2 > Preferences...**, unde
 
 In the tab **Profiles**, create a new one with the "+" icon, and rename it to your first name for example. Then, select **Other Actions... > Set as Default**. Under the section **General** set **Working Directory** to be **Reuse previous session's directory**. Finally, under the section **Window**, change the size to something better, like **Columns: 125** and **Rows: 35**.
 
-When done, hit the red "X" in the upper left (saving is automatic in OS X preference panes). Close the window and open a new one to see the size change.
+When done, hit the red "X" in the upper left (saving is automatic in macOS preference panes). Close the window and open a new one to see the size change.
+
+### Beautiful terminal
+
+Since we spend so much time in the terminal, we should try to make it a more pleasant and colorful place. What follows might seem like a lot of work, but trust me, it'll make the development experience so much better.
+
+First let's add some color. There are many great color schemes out there, but if you don't know where to start you can try [Atom One Dark](https://github.com/nathanbuchar/atom-one-dark-terminal). Download the iTerm presets for the theme by running:
+
+```
+cd ~/Downloads
+curl -o "Atom One Dark.itermcolors" https://raw.githubusercontent.com/nathanbuchar/atom-one-dark-terminal/master/scheme/iterm/One%20Dark.itermcolors
+curl -o "Atom One Light.itermcolors" https://raw.githubusercontent.com/nathanbuchar/atom-one-dark-terminal/master/scheme/iterm/One%20Light.itermcolors
+```
+
+Then, in **iTerm2 Preferences**, under **Profiles** and **Colors**, go to **Color Presets... > Import...**, find and open the **Atom One Dark.itermcolors** file we just downloaded. Repeat these steps for **Atom One Light.itermcolors**.  Now open **Color Presets...** again and select **Atom One Dark** to activate the dark theme (or choose the light them if that's your preference).
+
+Not a lot of colors yet. We need to tweak a little bit our Unix user's profile for that. This is done (on macOS and Linux), in the `~/.bash_profile` text file (`~` stands for the user's home directory).
+
+We'll come back to the details of that later, but for now, just download the files [.bash_profile](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_profile), [.bash_prompt](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_prompt), [.aliases](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.aliases) attached to this document into your home directory (`.bash_profile` is the one that gets loaded, I've set it up to call the others):
+
+```
+cd ~
+curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_profile
+curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_prompt
+curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.aliases
+```
+
+With that, open a new terminal tab (Cmd+T) and see the change! Try the list commands: `ls`, `ls -lh` (aliased to `ll`), `ls -lha` (aliased to `la`).
+
+Now we have a terminal we can work with!
+
+(Thanks to Mathias Bynens for his awesome [dotfiles](https://github.com/mathiasbynens/dotfiles).)
 
 ## Homebrew
 
-Package managers make it so much easier to install and update applications (for Operating Systems) or libraries (for programming languages). The most popular one for OS X is [Homebrew](http://brew.sh/).
+Package managers make it so much easier to install and update applications (for Operating Systems) or libraries (for programming languages). The most popular one for macOS is [Homebrew](http://brew.sh/).
 
 ### Install
 
@@ -94,7 +117,11 @@ An important dependency before Homebrew can work is the **Command Line Developer
 xcode-select --install
 ```
 
-Once that is done, we can install Hombrew by copy-pasting the installation command from the [Homebrew homepage]([Homebrew](http://brew.sh/) inside the terminal.
+Once that is done, we can install Homebrew by copy-pasting the installation command from the [Homebrew homepage]([Homebrew](http://brew.sh/) inside the terminal:
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
 Follow the steps on the screen. You will be prompted for your user password so Homebrew can set appropriate permissions.
 
@@ -116,14 +143,6 @@ To update Homebrew's directory of formulae, run:
 
 ```
 brew update
-```
-
-**Note**: I've seen that command fail sometimes because of a bug. If that ever happens, run the following (when you have Git installed):
-
-```
-cd /usr/local
-git fetch origin
-git reset --hard origin/master
 ```
 
 To see if any of your packages need to be updated:
@@ -160,7 +179,7 @@ To install it, simply run:
 brew tap homebrew/services
 ```
 
-After installing a service (for example a database), it should automatically add itself to Hombrew Services. If not, you can add it manually with:
+After installing a service (for example a database), it should automatically add itself to Homebrew Services. If not, you can add it manually with:
 
 ```
 brew services <formula>
@@ -178,39 +197,9 @@ At anytime you can view which services are running with:
 brew services list
 ```
 
-## Beautiful terminal
-
-Since we spend so much time in the terminal, we should try to make it a more pleasant and colorful place. What follows might seem like a lot of work, but trust me, it'll make the development experience so much better.
-
-First let's add some color. There are many great color schemes out there, but if you don't know where to start you can try [Oceanic Next](https://github.com/mhartington/oceanic-next-iterm). Download the iTerm presets for the theme by running:
-
-```
-cd ~/Downloads
-curl -O https://raw.githubusercontent.com/mhartington/oceanic-next-iterm/master/Oceanic-Next.itermcolors
-```
-
-Then, in **iTerm2 Preferences**, under **Profiles** and **Colors**, go to **Load Presets... > Import...**, find and open the **Oceanic-Next.itermcolors** file we just downloaded. Go back to **Load Presets...** and select **Oceanic Next** to activate it. Voila!
-
-Not a lot of colors yet. We need to tweak a little bit our Unix user's profile for that. This is done (on OS X and Linux), in the `~/.bash_profile` text file (`~` stands for the user's home directory).
-
-We'll come back to the details of that later, but for now, just download the files [.bash_profile](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_profile), [.bash_prompt](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_prompt), [.aliases](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.aliases) attached to this document into your home directory (`.bash_profile` is the one that gets loaded, I've set it up to call the others):
-
-```
-cd ~
-curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_profile
-curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_prompt
-curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.aliases
-```
-
-With that, open a new terminal tab (Cmd+T) and see the change! Try the list commands: `ls`, `ls -lh` (aliased to `ll`), `ls -lha` (aliased to `la`).
-
-Now we have a terminal we can work with!
-
-(Thanks to Mathias Bynens for his awesome [dotfiles](https://github.com/mathiasbynens/dotfiles).)
-
 ## Git
 
-Mac OS X comes with a pre-installed version of [Git](http://git-scm.com/), but we'll install our own through Homebrew to allow easy upgrades and not interfere with the system version. To do so, simply run:
+macOS comes with a pre-installed version of [Git](http://git-scm.com/), but we'll install our own through Homebrew to allow easy upgrades and not interfere with the system version. To do so, simply run:
 
 ```
 brew update
@@ -243,95 +232,52 @@ git config --global user.email "your_email@youremail.com"
 
 They will get added to your `.gitconfig` file.
 
-On a Mac, it is important to remember to add `.DS_Store` (a hidden OS X system file that's put in folders) to your project `.gitignore` files. You can take a look at this repository's [.gitignore](https://github.com/nicolashery/mac-dev-setup/blob/master/.gitignore) file for inspiration. You can also set it up in a global `.gitignore` file by cloning it into your home directory (but you'll want to make sure any collaborators also do it):
+On a Mac, it is important to remember to add `.DS_Store` (a hidden macOS system file that's put in folders) to your project `.gitignore` files. You also set up a global `.gitignore` file, located for instance in your home directory (but you'll want to make sure any collaborators also do it):
 
 ```
 cd ~
 curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.gitignore
+git config --global core.excludesfile ~/.gitignore
 ```
 
-## Sublime Text
+## Visual Studio Code
 
-With the terminal, the text editor is a developer's most important tool. Everyone has their preferences, but if you're just getting started and looking for something simple that works, [Sublime Text](http://www.sublimetext.com/) is a pretty good option.
+With the terminal, the text editor is a developer's most important tool. Everyone has their preferences, but if you're just getting started and looking for something simple that works, [Visual Studio Code](https://code.visualstudio.com/) is a pretty good option.
 
-Go ahead and [download](http://www.sublimetext.com/3) it. Open the **.dmg** file, drag-and-drop in the **Applications** folder, you know the drill now. Launch the application.
+Go ahead and [download](https://code.visualstudio.com/Download) it. Open the **.dmg** file, drag-and-drop in the **Applications** folder, you know the drill now. Launch the application.
 
-**Note**: At this point I'm going to create a shortcut on the OS X Dock for both for Sublime Text and iTerm. To do so, right-click on the running application and select **Options > Keep in Dock**.
+**Note**: At this point I'm going to create a shortcut on the macOS Dock for both for Visual Studio Code and iTerm. To do so, right-click on the running application and select **Options > Keep in Dock**.
 
-Sublime Text is not free, but I think it has an unlimited "evaluation period". Anyhow, we're going to be using it so much that even the seemingly expensive $70 price tag is worth every penny. If you can afford it, I suggest you [support](http://www.sublimetext.com/buy) this awesome tool. :)
-
-Just like the terminal, let's configure our editor a little. Go to **Sublime Text > Preferences > Settings - User** and paste the following in the file that just opened:
+Just like the terminal, let's configure our editor a little. Go to **Code > Preferences > Settings**. In the very top-right of the interface you should see an icon with brackets that appeared **{ }** (on hover, it should say "Open Settings (JSON)"). Click on it, and paste the following:
 
 ```json
 {
-  "font_size": 13,
-  "rulers":
-  [
-      79
-  ],
-  "highlight_line": true,
-  "bold_folder_labels": true,
-  "highlight_modified_tabs": true,
-  "tab_size": 2,
-  "translate_tabs_to_spaces": true,
-  "word_wrap": false,
-  "indent_to_bracket": true,
-  "trim_trailing_white_space_on_save": true,
-  "ensure_newline_at_eof_on_save": true
+  "editor.tabSize": 2,
+  "editor.rulers": [80],
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "workbench.editor.enablePreview": false
 }
 ```
 
-Feel free to tweak these (like the font size) to your preference. When done, save the file and close it.
+Feel free to tweak these to your preference. When done, save the file and close it.
 
-I use tab size 2 for everything except Python and Markdown files, where I use tab size 4. If you have a Python and Markdown file handy (or create dummy ones with `$ touch dummy.py`), for each one, open it and go to **Sublime Text > Preferences > Settings - More > Syntax Specific - User** to paste in:
+Pasting the above JSON snippet was handy to quickly customize things, but for further setting changes feel free to search in the "Settings" panel that opened first (shortcut **Cmd+,**). When your happy with your setup, you can save the JSON to quickly restore it on a new machine.
 
-```json
-{
-  "tab_size": 4
-}
-```
+If you remember only one keyboard shortcut in VS Code, it should be **Cmd+Shift+P**. This opens the **Command Palette**, from which you can run pretty much anything.
 
-
-Sublime Text is very extensible. To customize it further, we are going to install the [Sublime Package Control](https://packagecontrol.io/installation). Copy the snippet for Sublime Text 3 from the installation page, and back in your editor open the console with **Ctrl+\`** (back tick), paste the snippet, and hit **Enter**.
-
-Once installation is complete, restart Sublime Text (Note: on the Mac, closing all windows doesn't close the application, you need to hit **Cmd+Q**).
-
-To install a new package, open the command list with **Cmd+Shift+P**, type "install", and select **Package Control: Install Package**.
-
-Let's use this to customize the color of our editor. I'm going to change two things: the **Theme** (which is how the tabs, the file explorer on the left, etc. look) and the **Color Scheme** (the colors of the code). Again, feel free to pick different ones, or stick with the default.
-
-A popular Theme is the [Soda Theme](https://github.com/buymeasoda/soda-theme). To install it, open Package Control's installation list as described above and type "soda". Select **Theme - Soda** from the list.
-
-After the installation is complete, go to **Sublime Text > Preferences > Settings - User** and add the following lines:
-
-```json
-{
-  "theme": "Soda Dark 3.sublime-theme",
-  "soda_classic_tabs": true
-}
-```
-
-For the **Color Scheme**, you can pick one from those that ship with Sublime Text by going to **Sublime Text > Preferences > Color Scheme**. Or you can install one using Package Control. Let's do that and install Oceanic Next to match the color scheme of our terminal. Hit **Cmd+Shift+P**, select **Package Control: Install Package**, search for "oceanic next", and select **Oceanic Next Color Scheme**.
-
-Activate the Color Scheme by adding this line to **Sublime Text > Preferences > Settings - User**:
-
-```json
-{
-  "color_scheme": "Packages/Oceanic Next Color Scheme/Oceanic Next.tmTheme"
-}
-```
-
-Sublime Text already supports syntax highlighting for a lot of languages. You can always install more for other languages you work with using Package Control.
-
-Let's create a [command line shortcut](http://www.sublimetext.com/docs/3/osx_command_line.html) so we can launch Sublime Text from the terminal:
+Let's open the command palette now, and search for `Shell Command: Install 'code' command in PATH`. Hit enter when it shows up. This will install the command-line tool `code` to quickly open VS Code from the terminal. When in a projects directory, you'll be able to run:
 
 ```
-cd ~
-mkdir bin
-ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ~/bin/subl
+cd myproject/
+code .
 ```
 
-Now I can open a file with `$ subl myfile.py` or start a new project in the current directory with `$ subl .`. Pretty cool.
+VS Code is very extensible. To customize it further, open the **Extensions** tab on the left.
+
+Let's do that now to customize the color of our editor. Search for the [Atom One Dark Theme](https://marketplace.visualstudio.com/items?itemName=akamud.vscode-theme-onedark) extension, select it and click **Install**. Repeat this for the [Atom One Light Theme](https://marketplace.visualstudio.com/items?itemName=akamud.vscode-theme-onelight).
+
+Finally, activate the theme by going to **Code > Preferences > Color Theme** and selecting **Atom One Dark** (or **Atom One Light** if that is your preference).
 
 ## Vim
 
@@ -369,7 +315,7 @@ With that, Vim will look a lot better next time you open it!
 
 ## Python
 
-OS X, like Linux, ships with [Python](http://python.org/) already installed. But you don't want to mess with the system Python (some system tools rely on it, etc.), so we'll install our own version using [pyenv](https://github.com/yyuu/pyenv). This will also allow us to manage multiple versions of Python (ex: 2.7 and 3) should we need to.
+macOS, like Linux, ships with [Python](http://python.org/) already installed. But you don't want to mess with the system Python (some system tools rely on it, etc.), so we'll install our own version using [pyenv](https://github.com/yyuu/pyenv). This will also allow us to manage multiple versions of Python (ex: 2.7 and 3) should we need to.
 
 Install `pyenv` via Homebrew by running:
 
@@ -749,7 +695,7 @@ gem cleanup
 
 [Heroku](http://www.heroku.com/), if you're not already familiar with it, is a [Platform-as-a-Service](http://en.wikipedia.org/wiki/Platform_as_a_service) (PaaS) that makes it really easy to deploy your apps online. There are other similar solutions out there, but Heroku was among the first and is currently the most popular. Not only does it make a developer's life easier, but I find that having Heroku deployment in mind when building an app forces you to follow modern app development [best practices](http://www.12factor.net/).
 
-Assuming that you have an account (sign up if you don't), let's install the [Heroku CLI](https://devcenter.heroku.com/categories/command-line). Heroku offers a Mac OS X installer, the [Heroku Toolbelt](https://toolbelt.heroku.com/), that includes the client. But for these kind of tools, I prefer using Homebrew. It allows us to keep better track of what we have installed. Luckily for us, Homebrew includes a `heroku-toolbelt` formula:
+Assuming that you have an account (sign up if you don't), let's install the [Heroku CLI](https://devcenter.heroku.com/categories/command-line). Heroku offers a macOS installer, the [Heroku Toolbelt](https://toolbelt.heroku.com/), that includes the client. But for these kind of tools, I prefer using Homebrew. It allows us to keep better track of what we have installed. Luckily for us, Homebrew includes a `heroku-toolbelt` formula:
 
 ```
 brew install heroku-toolbelt
