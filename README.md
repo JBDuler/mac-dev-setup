@@ -498,7 +498,7 @@ pyenv shell --unset
 
 The recommended way to install [Node.js](http://nodejs.org/) is to use [nvm](https://github.com/creationix/nvm) (Node Version Manager) which allows you to manage multiple versions of Node.js on the same machine.
 
-Install nvm by copy-pasting the [install script command](https://github.com/creationix/nvm#install-script) into your terminal.
+Install nvm by copy-pasting the [install script command](https://github.com/creationix/nvm#install--update-script) into your terminal.
 
 Once that is done, open a new terminal and verify that it was installed correctly by running:
 
@@ -506,28 +506,52 @@ Once that is done, open a new terminal and verify that it was installed correctl
 command -v nvm
 ```
 
-Install the latest stable version of Node.js with:
+View the all available stable versions of Node with:
+
+```
+nvm ls-remote --lts
+```
+
+Install the latest stable version with:
 
 ```
 nvm install node
 ```
 
-It will also set this version as your default version. You can install another specific version, for example Node 4, with:
+It will also set this version as your default version. You can install another specific version, for example Node 10, with:
 
 ```
-nvm install 4
+nvm install 10
 ```
 
 And switch between versions by using:
 
 ```
-nvm use 4
+nvm use 10
 nvm use default
 ```
 
-Installing Node also installs the [npm](https://npmjs.org/) package manager.
+See which versions you have install with:
 
-### Npm usage
+```
+nvm ls
+```
+
+In a project's directory you can create a `.nvmrc` file containing the Node.js version the project uses, for example:
+
+```
+echo "10" > .nvmrc
+```
+
+Next time you enter the project's directory from a terminal, you can load the correct version of Node.js by running:
+
+```
+nvm use
+```
+
+### npm
+
+Installing Node also installs the [npm](https://npmjs.org/) package manager.
 
 To install a package:
 
@@ -539,14 +563,14 @@ npm install -g <package> # Install globally
 To install a package and save it in your project's `package.json` file:
 
 ```
-npm install <package> --save
+npm install --save <package>
 ```
 
 To see what's installed:
 
 ```
-npm list # Local
-npm list -g # Global
+npm list --depth 1 # local
+npm list -g --depth 1 # global
 ```
 
 To find outdated packages (locally or globally):
@@ -564,23 +588,8 @@ npm update [<package>]
 To uninstall a package:
 
 ```
-npm uninstall <package>
+npm uninstall --save <package>
 ```
-
-### ESLint
-
-ESLint is a JavaScript developer's best friend. With Sublime Text, you can get real-time linting right inside the editor thanks to the [SublimeLinter](http://www.sublimelinter.com) package.
-
-First install [eslint_d](https://github.com/mantoni/eslint_d.js) globally via npm:
-
-```
-npm install -g eslint_d
-```
-
-Then install the following packages through Sublime Text's Package Control:
-
-- **SublimeLinter**
-- **SublimeLinter-contrib-eslint_d**
 
 ## Ruby
 
