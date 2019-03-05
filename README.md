@@ -139,12 +139,6 @@ To install a package (or **Formula** in Homebrew vocabulary) simply type:
 brew install <formula>
 ```
 
-To update Homebrew's directory of formulae, run:
-
-```
-brew update
-```
-
 To see if any of your packages need to be updated:
 
 ```
@@ -202,7 +196,6 @@ brew services list
 macOS comes with a pre-installed version of [Git](http://git-scm.com/), but we'll install our own through Homebrew to allow easy upgrades and not interfere with the system version. To do so, simply run:
 
 ```
-brew update
 brew install git
 ```
 
@@ -350,7 +343,7 @@ The star (`*`) should indicate we are still using the `system` version, which is
 You can switch your current terminal to another Python version with:
 
 ```
-pyenv global 3.x.x
+pyenv shell 3.x.x
 ```
 
 You should now see that version when running:
@@ -409,7 +402,7 @@ Instead of installing and using `virtualenv` directly, we'll use the dedicated `
 brew install pyenv-virtualenv
 ```
 
-After installation, add the following line to your `.bash_profile`;
+After installation, add the following line to your `.bash_profile`:
 
 ```bash
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
@@ -597,55 +590,71 @@ Like Python, [Ruby](http://www.ruby-lang.org/) is already installed on Unix syst
 
 ### Install
 
-When installing Ruby, best practice is to use [RVM](https://rvm.io/) (Ruby Version Manager) which allows you to manage multiple versions of Ruby on the same machine. Installing RVM, as well as the latest version of Ruby, is very easy. Just run:
+The recommended way to install Ruby is to use [rbenv](https://github.com/rbenv/rbenv), which allows you to manage multiple versions of Ruby on the same machine. You can install `rbenv` with Homebrew:
 
 ```
-curl -sSL https://get.rvm.io | bash -s stable --ruby
+brew install rbenv
 ```
 
-When it is done, both RVM and a fresh version of Ruby are installed.
+After installation, add the following line to your `.bash_profile`:
 
-Open a new terminal and run:
-
-```
-type rvm | head -1
+```bash
+eval "$(rbenv init -)"
 ```
 
-You should get the output `rvm is a function`.
+And reload it with:
+
+```
+source ~/.bash_profile
+```
 
 ### Usage
 
-The following command will show you which versions of Ruby you have installed:
+The following command will show you which versions of Ruby are available to install:
 
 ```
-rvm list
+rbenv install --list
 ```
 
-The one that was just installed, Ruby 2, should be set as default. When managing multiple versions, you switch between them with:
+You can find the latest version in that list and install it with (replace `.x.x` with actual version numbers):
 
 ```
-rvm use system # Switch back to system install (ex: 2.0)
-rvm use 2.3 --default # Switch to 2.3 and sets it as default
+rbenv install 2.x.x
 ```
 
-Run the following to make sure the version you want is being used:
+Run the following to see which versions you have installed:
 
 ```
-which ruby
-ruby --version
+rbenv versions
 ```
 
-You can install another version with:
+The start (`*`) will show you that we are currently using the default `system` version. You can switch your terminal to use the one you just installed:
 
 ```
-rvm install 2.2
+rbenv shell 2.x.x
 ```
 
-To update RVM itself, use:
+You can also set it as the default version if you want:
 
 ```
-rvm get stable
+rbenv global 2.x.x
 ```
+
+In a specific project's directory, you can ask `rbenv` to create a `.ruby-version` file. Next time you enter that project's directory from the terminal, it will automatically load the correct Ruby version:
+
+```
+rbenv local 2.x.x
+```
+
+Check anytime which version you are using with:
+
+```
+rbenv version
+```
+
+See [rbenv's command reference](https://github.com/rbenv/rbenv#command-reference) for more information.
+
+### RubyGems & Bundler
 
 [RubyGems](http://rubygems.org/), the Ruby package manager, was also installed:
 
@@ -653,47 +662,41 @@ rvm get stable
 which gem
 ```
 
-Update to its latest version with:
+The first thing you want to do after installing a new Ruby version is to install [Bundler](https://bundler.io/). This tool will allow you to set up separate environments for your different Ruby projects, so their required gem versions won't conflict with each other. Install Bundler with:
 
 ```
-gem update --system
+gem install bundler
 ```
 
-To install a "gem" (Ruby package), run:
+In a new Ruby project directory, create a new `Gemfile` with:
 
 ```
-gem install <gemname>
+bundle init
 ```
 
-To install without generating the documentation for each gem (faster):
+Add a dependency to the `Gemfile`, for example the [Jekyll]() static site generator:
 
-```
-gem install <gemname> --no-document
-```
+```ruby
+source "https://rubygems.org"
 
-To see what gems you have installed:
-
-```
-gem list
+gem "jekyll"
 ```
 
-To check if any installed gems are outdated:
+Then install the project's dependencies with:
 
 ```
-gem outdated
+bundle install
 ```
 
-To update all gems or a particular gem:
+Make sure you check in both the `Gemfile` and `Gemfile.lock` into your Git repository.
+
+Update a specific dependency with:
 
 ```
-gem update [<gemname>]
+bundle update <gem>
 ```
 
-RubyGems keeps old versions of gems, so feel free to do come cleaning after updating:
-
-```
-gem cleanup
-```
+For more information, see the [Bundler documentation](https://bundler.io/docs.html).
 
 ## Heroku
 
@@ -730,7 +733,6 @@ The [Heroku Dev Center](https://devcenter.heroku.com/) is full of great resource
 Install PostgreSQL using Homebrew:
 
 ```
-brew update # Always good to do
 brew install postgresql
 ```
 
@@ -749,7 +751,6 @@ If you reboot your machine, PostgreSQL will be restarted at login.
 To install Redis, use Homebrew:
 
 ```
-brew update
 brew install redis
 ```
 
@@ -768,7 +769,6 @@ I'll let you refer to Redis' [documentation](http://redis.io/documentation) or o
 Installing it is very easy through Homebrew:
 
 ```
-brew update
 brew install mongo
 ```
 
