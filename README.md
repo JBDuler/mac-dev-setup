@@ -309,10 +309,10 @@ Install `pyenv` via Homebrew by running:
 brew install pyenv
 ```
 
-When finished, you should see instructions to add something to your profile. Open your `.bash_profile` in the home directory (you can use `$ subl ~/.bash_profile`), and add the following line:
+When finished, you should see instructions to add something to your profile. Open your `.bash_profile` in the home directory (you can use `$ code ~/.bash_profile`), and add the following line:
 
 ```bash
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
 ```
 
 Save the file and reload it with:
@@ -321,16 +321,22 @@ Save the file and reload it with:
 source ~/.bash_profile
 ```
 
+Before installing a new Python version, the [pyenv wiki](https://github.com/pyenv/pyenv/wiki) recommends having a few dependencies available:
+
+```
+brew install openssl readline sqlite3 xz zlib
+```
+
 We can now list all available Python versions by running:
 
 ```
 pyenv install --list
 ```
 
-Look for the latest 2.7.x version (or 3.x), and install it:
+Look for the latest 3.x version (or 2.7.x), and install it (replace the `.x.x` with actual numbers):
 
 ```
-pyenv install 2.7.13 # the latest version might be different
+pyenv install 3.x.x
 ```
 
 List the Python versions you have locally with:
@@ -339,10 +345,12 @@ List the Python versions you have locally with:
 pyenv versions
 ```
 
-The start (`*`) should indicate we are still using the `system` version. We should set the one we installed to be the default:
+The star (`*`) should indicate we are still using the `system` version, which is the default. We recommend leaving it as the default as some [Node.js](https://nodejs.org/en/) packages will use it in their installation process.
+
+You can switch your current terminal to another Python version with:
 
 ```
-pyenv global 2.7.13
+pyenv global 3.x.x
 ```
 
 You should now see that version when running:
@@ -350,6 +358,14 @@ You should now see that version when running:
 ```
 python --version
 ```
+
+If in a project directory, you can use:
+
+```
+pyenv local 3.x.x
+```
+
+This will save that project's Python version to a `.python-version` file. Next time you enter the project's directory from a terminal, `pyenv` will automatically load that version for you.
 
 For more information, see the [pyenv commands](https://github.com/yyuu/pyenv/blob/master/COMMANDS.md) documentation.
 
@@ -405,10 +421,10 @@ And reload it with:
 source ~/.bash_profile
 ```
 
-Now, let's say you have a project called `myproject`. You can set up virtualenv for that project and the Python version it uses (for example 2.7.13):
+Now, let's say you have a project called `myproject`. You can set up virtualenv for that project and the Python version it uses (replace `3.x.x` with the version you want):
 
 ```
-pyenv virtualenv 2.7.13 myproject
+pyenv virtualenv 3.x.x myproject
 ```
 
 See the list of virtualenvs you created with:
@@ -423,7 +439,9 @@ To use your project's virtualenv, you need to **activate** it first (in every te
 pyenv activate myproject
 ```
 
-You should see a `(myproject)` appear at the baeginning of your terminal prompt indicating that you are working inside the virtualenv. Now when you install something:
+If you run `pyenv virtualenvs` again, you should see a star (`*`) next to the active virtualenv.
+
+Now when you install something:
 
 ```
 pip install <package>
@@ -431,59 +449,50 @@ pip install <package>
 
 It will get installed in that virtualenv's folder, and not conflict with other projects.
 
-### IPython
+You can also set your project's `.python-version` to point to a virtualenv your created:
 
-[IPython](http://ipython.org/) is an awesome project which provides a much better Python shell than the one you get from running `$ python` in the command-line. It has many cool functions (running Unix commands from the Python shell, easy copy & paste, creating Matplotlib charts in-line, etc.) and I'll let you refer to the [documentation](http://ipython.org/ipython-doc/stable/index.html) to discover them.
-
-Before we install IPython, we'll need to get some dependencies. Run the following:
-
-    $ brew update # Always good to do
-    $ brew install zeromq # Necessary for pyzmq
-    $ brew install pyqt # Necessary for the qtconsole
-
-It may take a few minutes to build these.
-
-Once it's done, we can install IPython with all the available options:
-
-    $ pip install ipython[zmq,qtconsole,notebook,test]
-
-You can launch IPython from the command line with `$ ipython`, but what's more interesting is to use its [QT Console](http://ipython.org/ipython-doc/stable/interactive/qtconsole.html). Launch the QT Console by running:
-
-    $ ipython qtconsole
-
-You can also customize the font it uses:
-
-    $ ipython qtconsole --ConsoleWidget.font_family="Consolas" --ConsoleWidget.font_size=13
-
-And since I'm lazy and I don't want to type or copy & paste that all the time, I'm going to create an alias for it. Create a `.extra` text file in your home directory with `$ subl ~/.extra` (I've set up `.bash_profile` to load `.extra`), and add the following line:
-
-```bash
-alias ipy='ipython qtconsole --ConsoleWidget.font_family="Consolas" --ConsoleWidget.font_size=13'
+```
+pyenv local myproject
 ```
 
-Open a fresh terminal. Now when you run `$ ipy`, it will launch the QT Console with your configured options.
+Next time you enter that project's directory, `pyenv` will automatically load the virtualenv for you.
 
-To use the in-line Matplotlib functionality (nice for scientific computing), run `$ ipy --pylab=inline`.
+### Anaconda and Miniconda
 
-### Numpy and Scipy
+The Anaconda/Miniconda distributions of Python come with many useful tools for scientific computing.
 
-The [Numpy](http://numpy.scipy.org/) and [Scipy](http://www.scipy.org/SciPy) scientific libraries for Python are always a little tricky to install from source because they have all these dependencies they need to build correctly. Luckily for us, [Samuel John](http://www.samueljohn.de/) has put together some [Homebrew formulae](https://github.com/samueljohn/homebrew-python) to make it easier to install these Python libraries.
+You can install them using `pyenv`, for example (replace `x.x.x` with an actual version number):
 
-First, grab the special formulae (which are not part of Homebrew core):
+```
+pyenv install miniconda3-x.x.x
+```
 
-    $ brew tap samueljohn/python
-    $ brew tap homebrew/science
+You can create [conda](https://docs.conda.io/) environments after loading the Python distribution into your shell:
 
-Then, install the `gfortran` dependency (now in `gcc`) which we will need to build the libraries:
+```
+pyenv shell miniconda3-x.x.x
+conda create --name  mycondaproject
+conda activate mycondaproject
+```
 
-    $ brew install gcc
+Install packages, for example the [Jupyter Notebook](https://jupyter.org/), using:
 
-Finally, you can install Numpy and Scipy with:
+```
+conda install jupyter
+```
 
-    $ brew install numpy
-    $ brew install scipy
+You should now be able to run the notebook:
 
-(It may take a few minutes to build.)
+```
+jupyter notebook
+```
+
+Deactivate the environment, and return to the default Python version with:
+
+```
+conda deactivate
+pyenv shell --unset
+```
 
 ## Node.js
 
