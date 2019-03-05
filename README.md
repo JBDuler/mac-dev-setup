@@ -285,30 +285,16 @@ Although Sublime Text will be our main editor, it is a good idea to learn some v
 
 For example, when you run a Git commit, it will open Vim to allow you to type the commit message.
 
-I suggest you read a tutorial on Vim. Grasping the concept of the two "modes" of the editor, **Insert** (by pressing `i`) and **Normal** (by pressing `Esc` to exit Insert mode), will be the part that feels most unnatural. Also, it is good to know that typing `:wq` when in Normal mode will save and exit. After that, it's just remembering a few important keys.
+I suggest you read a tutorial on Vim. Grasping the concept of the two "modes" of the editor, **Insert** (by pressing `i`) and **Normal** (by pressing `Esc` to exit Insert mode), will be the part that feels most unnatural. Also, it is good to know that typing `:x` when in Normal mode will save and exit. After that, it's just remembering a few important keys.
 
-Vim's default settings aren't great, and you could spend a lot of time tweaking your configuration (the `.vimrc` file). But if you're like me and just use Vim occasionally, you'll be happy to know that [Tim Pope](https://github.com/tpope) has put together some sensible defaults to quickly get started.
+Vim's default settings aren't great, and you could spend a lot of time tweaking your configuration (the `.vimrc` file). But if you just use Vim occasionally, you'll be happy to know that [Tim Pope](https://github.com/tpope) has put together some sensible defaults to quickly get started.
 
-First, install [pathogen.vim](https://github.com/tpope/vim-pathogen) by running:
-
-```
-mkdir -p ~/.vim/autoload ~/.vim/bundle && \
-curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-```
-
-Then create a file `~/.vimrc` (you can use `$ subl ~/.vimrc`), and paste in the following:
+Using Vim's built-in package support, install these settings by running:
 
 ```
-execute pathogen#infect()
-syntax on
-filetype plugin indent on
-```
-
-And finally, install the Vim "sensible defaults" by running:
-
-```
-cd ~/.vim/bundle
-git clone git://github.com/tpope/vim-sensible.git
+mkdir -p ~/.vim/pack/tpope/start
+cd ~/.vim/pack/tpope/start
+git clone https://tpope.io/vim/sensible.git
 ```
 
 With that, Vim will look a lot better next time you open it!
